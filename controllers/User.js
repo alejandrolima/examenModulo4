@@ -9,6 +9,7 @@ const getAllUsers = catchAsync(async (req, res) => {
         data: users,
     });
 });
+
 const getUserById = catchAsync(async (req, res) => {
     const user = await User.findById(req.params.id);
     res.status(200).json({

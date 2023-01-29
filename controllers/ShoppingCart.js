@@ -15,7 +15,6 @@ const addShoppingCart = catchAsync(async (req, res) => {
         mensaje: "Producto agregado a carro de compras"
     });
 });
-
 const payShoppingCart = catchAsync(async (req, res) => {
     let newShoppingCart = new ShoppingCart();
     newShoppingCart.name = req.body.name;

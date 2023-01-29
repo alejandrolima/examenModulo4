@@ -14,6 +14,10 @@ const ShoppingCartSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
+    invoiceNumber: {
+        type: String,
+        required: true
+    },
     products: [
         {
             productId: String,
