@@ -30,6 +30,20 @@ const payShoppingCart = catchAsync(async (req, res) => {
     });
 });
 
+const  addProductShoppingCart = catchAsync(async (req, res) => {
+    // primero verificar si tiene un carrito el usuario PENDING
+    const newShoppingCart = await newShoppingCart.findByOne({user:req.params.name, status: "PENDING" });
+    if (newShoppingCart == null) {
+        // crear el carrito
+        let newShoppingCart = new ShoppingCart();
+            newShoppingCart.status  = "PENDING";
+            newShoppingCart.totalAmount =0;
+            newShoppingCart.user = req.params.name;
+            newShoppingCart.invoiceNumber = req.params.invoiceNumber;
+    }
+    // adicionamos el producto al carrito
+});
+
 const deleteShoppingCart = catchAsync(async (req, res) => {
 
     const ShoppingCarts = await ShoppingCart.findById(req.params.id);
@@ -44,6 +58,7 @@ const deleteShoppingCart = catchAsync(async (req, res) => {
 module.exports = {
     addShoppingCart,
     payShoppingCart,
-    deleteShoppingCart
+    deleteShoppingCart,
+    addProductShoppingCart
 }
 

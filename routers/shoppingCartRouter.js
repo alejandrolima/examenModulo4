@@ -1,13 +1,13 @@
 const express = require("express");
 const shoppingCartRouter = express.Router();
-const { addShoppingCart, payShoppingCart, deleteShoppingCart} = require("../controllers/ShoppingCart")
+const { addShoppingCart, payShoppingCart, deleteShoppingCart, addProductShoppingCart} = require("../controllers/ShoppingCart")
 const {protect } = require("../controllers/Auth");
 //shopping cart
 shoppingCartRouter
     .route("/product")
     .all(protect)
-    .post(addShoppingCart);
-    
+    .post(addProductShoppingCart);
+
 shoppingCartRouter
     .route("/product/:id")
     .all(protect)

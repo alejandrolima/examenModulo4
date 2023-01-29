@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 const ShoppingCartSchema = new mongoose.Schema({
+    invoiceNumber:{
+        type: String,
+        required: true,
+        unique: true
+    },
     status: {
         type: String,
         required: true,
