@@ -7,8 +7,7 @@ const ShoppingCartSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     totalAmount: {
         type: Number,

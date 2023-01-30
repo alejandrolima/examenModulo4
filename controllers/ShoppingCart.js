@@ -17,17 +17,32 @@ const addShoppingCart = catchAsync(async (req, res) => {
     });
 });
 const payShoppingCart = catchAsync(async (req, res) => {
-    let newShoppingCart = new ShoppingCart();
-    newShoppingCart.name = req.body.name;
-    newShoppingCart.price = req.body.price;
-    newShoppingCart.unit = req.body.unit;
-    newShoppingCart.inventory = req.body.inventory;
-    newShoppingCart = await newShoppingCart.save();
-    res.status(200).json({
-        status: "ok",
-        dataInserted: newShoppingCart,
-        mensaje: "Carro de compras pagado"
-    });
+
+    let shoppingCarts = new ShoppingCart();
+    shoppingCarts = await ShoppingCart.find({status: 'PENDING'});
+
+    if(shoppingCarts.length > 0) {
+        if(shoppingCarts[0].products.length>0) {
+            shoppingCarts[0].status = 'PAID';
+            
+            shoppingCarts[0].save();
+            res.status(200).json({
+                status: "ok",
+                mensaje:'El pago fue exitoso'
+            });
+        } else {
+            res.status(500).json({
+                status: "error",
+                mensaje:`No se encontraron registrados productos en el carrito`
+            });
+        }
+    } else {
+        res.status(500).json({
+            status: "error",
+            mensaje:`No se encontro un carrito con estado pendiente`
+        });
+    }
+
 });
 
 const  addProductShoppingCart = catchAsync(async (req, res) => {
@@ -64,13 +79,39 @@ const  addProductShoppingCart = catchAsync(async (req, res) => {
 
 const deleteShoppingCart = catchAsync(async (req, res) => {
 
-    const ShoppingCarts = await ShoppingCart.findById(req.params.id);
+    let shoppingCarts = new ShoppingCart();
+    shoppingCarts = await ShoppingCart.find({status: 'PENDING'});
     
-    await ShoppingCart.remove(ShoppingCarts);
-    res.status(200).json({
-        status: "ok",
-        mensaje: "Eliminado correctamente"
-    });
+    if(shoppingCarts.length > 0) {
+
+        let valor = shoppingCarts[0].products.filter((producto) => producto.productId !== req.params.id);
+        console.log('valorrrrrr:', valor);
+
+        if(valor) {
+            if(shoppingCarts[0].products.length>1) {
+                shoppingCarts[0].products = shoppingCarts[0].products.filter((producto) => producto.productId == req.params.id );
+                shoppingCarts[0].save();
+            } else {
+                shoppingCarts[0].products.shift();
+                shoppingCarts[0].save();
+            }
+
+            res.status(200).json({
+                status: "ok",
+                mensaje: "Eliminado correctamente"
+            });
+        } else {
+            res.status(500).json({
+                status: "error",
+                mensaje:`No se encontro un registro con el id: ${req.params.id}`
+            });
+        }
+    } else {
+        res.status(200).json({
+            status: "ok",
+            mensaje: "No se encontro con status pendiente"
+        });
+    }
 })
 
 module.exports = {
